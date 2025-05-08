@@ -1,0 +1,35 @@
+# version: '3.9'
+
+services:
+  db:
+    image: postgres:15
+    container_name: open_media_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: piponsuhu12345
+      POSTGRES_DB: open_media
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  app:
+    container_name: open_media_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    env_file:
+      - .env.docker
+    volumes:
+      - .:/app
+    command: npm run dev  # or 'npm run build && npm start' for production
+    stdin_open: true
+    tty: true
+
+volumes:
+  postgres_data:

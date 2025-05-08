@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+emailVerified  DateTime?
+  name      String?
+  password  String?
+  image    String? 
+  searches  Search[]
+  views     View[]
+  accounts  Account[]
+  sessions  Session[]
+  createdAt DateTime @default(now())
+}
+
+model Account {
+  id                 String  @id @default(uuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Search {
+  id        String   @id @default(uuid())
+  query     String
+  type      String   // "image", "audio", "video"
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model View {
+  id        String   @id @default(uuid())
+  mediaId   String   // ID of the viewed media (from Openverse/Pixabay)
+  mediaType String   // "image", "audio", "video"
+  title     String   // Title of the viewed media
+  url       String   // URL of the viewed media
+  thumbnail String?  // Thumbnail URL of the viewed media
+  source    String   // "openverse" or "pixabay"
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
