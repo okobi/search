@@ -1,6 +1,7 @@
 'use client';
 
 import { JSX, useState } from 'react';
+// import { signOut, useSession } from'react';
 import { signOut, useSession } from 'next-auth/react';
 
 interface SearchBarProps {
@@ -45,10 +46,10 @@ export default function SearchBar({
   const appliedFilters: JSX.Element[] = [];
 
   if (exactPhrase) {
-    appliedFilters.push(<li key="exact">Exact Phrase: "{exactPhrase}"</li>);
+    appliedFilters.push(<li key="exact">Exact: "{exactPhrase}"</li>);
   }
   if (excludeWords) {
-    appliedFilters.push(<li key="exclude">Exclude Words: {excludeWords}</li>);
+    appliedFilters.push(<li key="exclude">Exclude: {excludeWords}</li>);
   }
   if (sourceFilter && sourceFilter !== 'all') {
     appliedFilters.push(<li key="source">Source: {sourceFilter.charAt(0).toUpperCase() + sourceFilter.slice(1)}</li>);
@@ -59,12 +60,12 @@ export default function SearchBar({
   if (sortBy !== 'relevance') {
     appliedFilters.push(
       <li key="sort">
-        Sort By: {
-          sortBy === 'size' ? 'Size (Largest First)' :
+        Sort: {
+          sortBy === 'size' ? 'Size' :
           sortBy === 'title-asc' ? 'Title (A-Z)' :
           sortBy === 'title-desc' ? 'Title (Z-A)' :
-          sortBy === 'source-asc' ? 'Source (Openverse to Pixabay)' :
-          'Source (Pixabay to Openverse)'
+          sortBy === 'source-asc' ? 'Source (A-Z)' :
+          'Source (Z-A)'
         }
       </li>
     );
@@ -74,7 +75,7 @@ export default function SearchBar({
     setLogoutLoading(true);
     try {
       await signOut({ redirect: false });
-      window.location.href = '/'; // Hard redirect to sign-in page
+      window.location.href = '/';
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
@@ -83,11 +84,11 @@ export default function SearchBar({
   };
 
   return (
-    <div className="max-w-3xl mx-auto relative">
-      <form onSubmit={handleSearch} className="flex items-center">
+    <div className="w-full max-w-2xl mx-auto">
+      <form onSubmit={handleSearch} className="flex items-center space-x-2">
         <div className="relative flex-grow">
-          <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
-            <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+            <svg className="w-4 h-4 text-neon-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
           </div>
@@ -95,80 +96,69 @@ export default function SearchBar({
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search for images, audio, or videos..."
-            className="w-full pl-12 pr-4 py-3 bg-gray-100 border-none rounded-full focus:ring-2 focus:ring-indigo-400 text-gray-800 placeholder-gray-400 transition-all duration-300 shadow-sm hover:shadow-md"
+            placeholder="Search media..."
+            className="w-full pl-10 pr-3 py-2 bg-gray-900/50 backdrop-blur-md border border-neon-purple/30 rounded-full text-gray-200 placeholder-gray-500 focus:border-neon-purple focus:ring-2 focus:ring-neon-purple/50 transition-all duration-300"
           />
         </div>
         <button
           type="submit"
-          className="ml-3 px-6 py-3 bg-gradient-to-r from-indigo-500 to-blue-500 text-white rounded-full hover:from-indigo-600 hover:to-blue-600 focus:ring-2 focus:ring-indigo-400 transition-all duration-300 shadow-sm hover:shadow-md"
+          className="px-4 py-2 bg-transparent border border-neon-cyan text-neon-cyan rounded-full hover:bg-neon-cyan/20 hover:text-white transition-all duration-300"
         >
           Search
         </button>
         <button
           type="button"
           onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
-          className="ml-2 px-4 py-3 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition-all duration-300 shadow-sm hover:shadow-md flex items-center"
+          className="px-3 py-2 bg-transparent border border-neon-purple text-neon-purple rounded-full hover:bg-neon-purple/20 hover:text-white transition-all duration-300 flex items-center"
         >
-          Advanced
           <svg
-            className={`w-4 h-4 ml-2 transition-transform ${showAdvancedSearch ? 'rotate-180' : ''}`}
+            className={`w-3 h-3 mr-1 transition-transform ${showAdvancedSearch ? 'rotate-180' : ''}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M19 9l-7 7-7-7"
-            ></path>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
           </svg>
+          Advanced
         </button>
         {status === 'authenticated' && (
           <button
             type="button"
             onClick={handleLogout}
             disabled={logoutLoading}
-            className="ml-2 px-4 py-3 bg-red-200 text-red-700 rounded-full hover:bg-red-300 disabled:bg-red-100 transition-all duration-300 shadow-sm hover:shadow-md"
+            className="px-3 py-2 bg-transparent border border-neon-pink text-neon-pink rounded-full hover:bg-neon-pink/20 hover:text-white disabled:opacity-50 transition-all duration-300"
           >
-            {logoutLoading ? 'Logging out...' : 'Logout'}
+            {logoutLoading ? '...' : 'Logout'}
           </button>
         )}
       </form>
 
       {showAdvancedSearch && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white p-4 rounded-lg shadow-lg z-20">
-          <div className="space-y-3">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-              <label className="text-sm font-medium text-gray-700 flex-shrink-0 sm:w-24">
-                Exact Phrase:
-              </label>
+        <div className="mt-2 bg-gray-900/70 backdrop-blur-md p-3 rounded-lg border border-neon-purple/30 z-20">
+          <div className="space-y-2">
+            <div className="flex items-center space-x-2">
+              <label className="text-xs font-medium text-gray-300 w-20">Exact Phrase:</label>
               <input
                 type="text"
                 value={exactPhrase}
                 onChange={(e) => setExactPhrase(e.target.value)}
-                placeholder='e.g., "mountain sunset"'
-                className="flex-grow px-3 py-2 bg-gray-100 border-none rounded-lg focus:ring-2 focus:ring-indigo-400 text-gray-800 placeholder-gray-400 transition-all duration-300 shadow-sm hover:shadow-md"
+                placeholder="e.g., mountain sunset"
+                className="flex-grow px-2 py-1 bg-gray-900/50 border border-neon-purple/20 rounded-lg text-gray-200 placeholder-gray-500 focus:border-neon-purple focus:ring-1 focus:ring-neon-purple/50 text-sm"
               />
             </div>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-              <label className="text-sm font-medium text-gray-700 flex-shrink-0 sm:w-24">
-                Exclude Words:
-              </label>
+            <div className="flex items-center space-x-2">
+              <label className="text-xs font-medium text-gray-300 w-20">Exclude Words:</label>
               <input
                 type="text"
                 value={excludeWords}
                 onChange={(e) => setExcludeWords(e.target.value)}
                 placeholder="e.g., forest river"
-                className="flex-grow px-3 py-2 bg-gray-100 border-none rounded-lg focus:ring-2 focus:ring-indigo-400 text-gray-800 placeholder-gray-400 transition-all duration-300 shadow-sm hover:shadow-md"
+                className="flex-grow px-2 py-1 bg-gray-900/50 border border-neon-purple/20 rounded-lg text-gray-200 placeholder-gray-500 focus:border-neon-purple focus:ring-1 focus:ring-neon-purple/50 text-sm"
               />
             </div>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-              <label className="text-sm font-medium text-gray-700 flex-shrink-0 sm:w-24">
-                Source Filter:
-              </label>
+            <div className="flex items-center space-x-2">
+              <label className="text-xs font-medium text-gray-300 w-20">Source:</label>
               <select
                 value={sourceFilter}
                 onChange={(e) => {
@@ -176,7 +166,7 @@ export default function SearchBar({
                     setSourceFilter(e.target.value as 'all' | 'openverse' | 'pixabay');
                   }
                 }}
-                className="flex-grow px-3 py-2 bg-gray-100 border-none rounded-lg focus:ring-2 focus:ring-indigo-400 text-gray-800 transition-all duration-300 shadow-sm hover:shadow-md"
+                className="flex-grow px-2 py-1 bg-gray-900/50 border border-neon-purple/20 rounded-lg text-gray-200 focus:border-neon-purple focus:ring-1 focus:ring-neon-purple/50 text-sm"
               >
                 <option value="all">All Sources</option>
                 <option value="openverse">Openverse</option>
@@ -184,17 +174,15 @@ export default function SearchBar({
               </select>
             </div>
             {sourceFilter !== 'pixabay' && (
-              <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-                <label className="text-sm font-medium text-gray-700 flex-shrink-0 sm:w-24">
-                  License Filter:
-                </label>
+              <div className="flex items-center space-x-2">
+                <label className="text-xs font-medium text-gray-300 w-20">License:</label>
                 <select
                   value={licenseFilter}
                   onChange={(e) => setLicenseFilter(e.target.value)}
-                  className="flex-grow px-3 py-2 bg-gray-100 border-none rounded-lg focus:ring-2 focus:ring-indigo-400 text-gray-800 transition-all duration-300 shadow-sm hover:shadow-md"
+                  className="flex-grow px-2 py-1 bg-gray-900/50 border border-neon-purple/20 rounded-lg text-gray-200 focus:border-neon-purple focus:ring-1 focus:ring-neon-purple/50 text-sm"
                 >
                   <option value="all">All Licenses</option>
-                  <option value="cc0">CC0 (Public Domain)</option>
+                  <option value="cc0">CC0</option>
                   <option value="by">CC BY</option>
                   <option value="by-sa">CC BY-SA</option>
                   <option value="by-nc-nd">CC BY-NC-ND</option>
@@ -204,21 +192,19 @@ export default function SearchBar({
                 </select>
               </div>
             )}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-              <label className="text-sm font-medium text-gray-700 flex-shrink-0 sm:w-24">
-                Sort By:
-              </label>
+            <div className="flex items-center space-x-2">
+              <label className="text-xs font-medium text-gray-300 w-20">Sort By:</label>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as 'relevance' | 'size' | 'title-asc' | 'title-desc' | 'source-asc' | 'source-desc')}
-                className="flex-grow px-3 py-2 bg-gray-100 border-none rounded-lg focus:ring-2 focus:ring-indigo-400 text-gray-800 transition-all duration-300 shadow-sm hover:shadow-md"
+                className="flex-grow px-2 py-1 bg-gray-900/50 border border-neon-purple/20 rounded-lg text-gray-200 focus:border-neon-purple focus:ring-1 focus:ring-neon-purple/50 text-sm"
               >
                 <option value="relevance">Relevance</option>
-                <option value="size">Size (Largest First)</option>
+                <option value="size">Size</option>
                 <option value="title-asc">Title (A-Z)</option>
                 <option value="title-desc">Title (Z-A)</option>
-                <option value="source-asc">Source (Openverse to Pixabay)</option>
-                <option value="source-desc">Source (Pixabay to Openverse)</option>
+                <option value="source-asc">Source (A-Z)</option>
+                <option value="source-desc">Source (Z-A)</option>
               </select>
             </div>
           </div>
@@ -226,9 +212,9 @@ export default function SearchBar({
       )}
 
       {appliedFilters.length > 0 && (
-        <div className="mt-4 text-sm text-gray-600">
-          <p>Applied Filters:</p>
-          <ul className="list-disc list-inside">
+        <div className="mt-2 text-xs text-gray-400 border-t border-neon-purple/20 pt-2">
+          <p className="font-medium">Filters:</p>
+          <ul className="list-none space-y-1">
             {appliedFilters}
           </ul>
         </div>

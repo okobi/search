@@ -9,8 +9,6 @@ import TabNavigation from './TabNavigation';
 import MediaResults from './MediaResults';
 import Modal from './Modal';
 import SearchHistorySidebar from './SearchHistorySidebar';
-import CustomAudioPlayer_unsigned from './CustomAudioPlayer';
-import CustomVideoPlayer from './CustomVideoPlayer';
 import { fetchMedia, MediaResult, FetchResult } from '../../utils/fetchMedia';
 
 export default function SearchPage() {
@@ -468,13 +466,13 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 font-sans flex">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-gray-100 font-sans flex">
       {/* Sidebar */}
       <SearchHistorySidebar refresh={() => {}} />
 
       {/* Main Content */}
       <div className="flex-1 transition-all duration-300">
-        <div className="sticky top-0 z-10 bg-white shadow-md p-6">
+        <div className="sticky top-0 z-10 bg-gray-800 shadow-md p-6">
           <SearchBar
             searchInput={searchInput}
             setSearchInput={setSearchInput}
@@ -495,12 +493,12 @@ export default function SearchPage() {
         </div>
         <div className="p-6 max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-3xl font-bold text-gray-800">
-              Search Results for "<span className="text-indigo-600">{query}</span>"
+            <h1 className="text-3xl font-bold text-gray-100">
+              Search Results for "<span className="text-indigo-400">{query}</span>"
             </h1>
             <Link
               href="/"
-              className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-all duration-300 shadow-sm hover:shadow-md"
+              className="flex items-center px-4 py-2 bg-gray-700 text-gray-200 rounded-full hover:bg-gray-600 hover:text-white transition-all duration-300 shadow-sm hover:shadow-md"
             >
               <svg
                 className="w-5 h-5 mr-2"

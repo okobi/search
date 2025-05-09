@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 
 interface MediaResult {
   id: string;
@@ -46,12 +46,10 @@ export default function MediaResults({ activeTab, imageResults, audioResults, vi
 
     if (loading && results.length === 0) {
       return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {[...Array(8)].map((_, index) => (
-            <div key={index} className="bg-white rounded-xl shadow-sm p-4 animate-pulse">
-              <div className="w-full h-48 bg-gray-200 rounded-lg mb-4"></div>
-              <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-              <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+            <div key={index} className="bg-gray-900/50 rounded-lg p-2 animate-pulse border border-neon-purple/20">
+              <div className="w-full h-40 bg-gray-800 rounded-lg"></div>
             </div>
           ))}
         </div>
@@ -60,50 +58,50 @@ export default function MediaResults({ activeTab, imageResults, audioResults, vi
     if (error) {
       return (
         <div className="flex flex-col items-center justify-center h-64 text-center">
-          <svg className="w-12 h-12 text-red-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <svg className="w-10 h-10 text-neon-pink mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"></path>
           </svg>
-          <p className="text-red-500 text-lg font-medium">{error}</p>
+          <p className="text-gray-400 text-sm">{error}</p>
         </div>
       );
     }
     if (results.length === 0) {
       return (
         <div className="flex flex-col items-center justify-center h-64 text-center">
-          <svg className="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <svg className="w-10 h-10 text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
           </svg>
-          <p className="text-gray-500 text-lg font-medium">No results found.</p>
+          <p className="text-gray-400 text-sm">No results found</p>
         </div>
       );
     }
 
     return (
       <>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {results.map((item, index) => {
             const key = `${item.source}-${item.id}-${index}`;
             const mediaFailed = failedMedia.has(key);
+            const displayTitle = item.title.length > 30 ? `${item.title.substring(0, 27)}...` : item.title;
 
             return (
               <div
                 key={key}
-                className="bg-white rounded-xl shadow-sm overflow-hidden transition-transform transform hover:scale-105 hover:shadow-md cursor-pointer"
+                className="bg-gray-900/50 rounded-lg overflow-hidden border border-neon-purple/20 hover:border-neon-purple/50 transition-all duration-300 transform hover:scale-105 cursor-pointer"
                 onClick={() => openModal(item, type === 'audio' ? 'audio' : type === 'videos' ? 'video' : 'image')}
               >
                 {type === 'videos' ? (
                   !mediaFailed ? (
-                    <div className="relative w-full h-48">
-                      <video
-                        src={item.videoURL}
-                        poster={item.thumbnail}
+                    <div className="relative w-full h-40">
+                      <img
+                        src={item.thumbnail}
+                        alt={item.title}
+                        className="w-full h-full object-cover rounded-t-lg"
                         onError={() => handleMediaError(key)}
-                        className="w-full h-full object-cover rounded-t-xl"
-                        muted
                       />
-                      <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/50 transition-opacity">
                         <svg
-                          className="w-12 h-12 text-white opacity-70 hover:opacity-100 transition-opacity"
+                          className="w-8 h-8 text-neon-cyan opacity-70 hover:opacity-100"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -125,64 +123,58 @@ export default function MediaResults({ activeTab, imageResults, audioResults, vi
                       </div>
                     </div>
                   ) : (
-                    <div className="w-full h-48 bg-gray-200 flex items-center justify-center rounded-t-xl">
-                      <span className="text-gray-500">No Preview</span>
+                    <div className="w-full h-40 bg-gray-800 flex items-center justify-center rounded-t-lg">
+                      <span className="text-gray-500 text-xs">No Preview</span>
                     </div>
                   )
                 ) : item.thumbnail && !mediaFailed ? (
-                  <div className="relative w-full h-48">
+                  <div className="relative w-full h-40">
                     <img
                       src={item.thumbnail}
-                      onError={() => handleMediaError(key)}
                       alt={item.title}
-                      className="w-full h-full object-cover rounded-t-xl"
-                      style={{ display: mediaFailed ? 'none' : 'block' }}
+                      className="w-full h-full object-cover rounded-t-lg"
+                      onError={() => handleMediaError(key)}
                     />
-                    {!mediaFailed && (
-                      <div className="absolute inset-0 bg-opacity-0 hover:bg-opacity-30 transition-opacity flex items-center justify-center">
-                        <svg
-                          className="w-8 h-8 text-white opacity-0 hover:opacity-100 transition-opacity"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                          ></path>
-                        </svg>
-                      </div>
-                    )}
+                    <div className="absolute inset-0 bg-black/0 hover:bg-black/30 transition-opacity flex items-center justify-center">
+                      <svg
+                        className="w-6 h-6 text-neon-cyan opacity-0 hover:opacity-100 transition-opacity"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                        ></path>
+                      </svg>
+                    </div>
                   </div>
                 ) : (
-                  <div className="w-full h-48 bg-gray-200 flex items-center justify-center rounded-t-xl">
-                    <span className="text-gray-500">No Preview</span>
+                  <div className="w-full h-40 bg-gray-800 flex items-center justify-center rounded-t-lg">
+                    <span className="text-gray-500 text-xs">No Preview</span>
                   </div>
                 )}
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-800 truncate">{item.title}</h3>
-                  <p className="text-sm text-gray-600 mt-1">By: {item.creator || 'Unknown'} (Source: {item.source})</p>
-                  <p className="text-xs text-gray-500 mt-1">License: {item.license}</p>
-                  <p className="text-xs text-gray-500 mt-1">Size: {formatSize(item.size)}</p>
+                <div className="p-2">
+                  <h3 className="text-sm font-medium text-gray-200 truncate">{displayTitle}</h3>
                 </div>
               </div>
             );
           })}
         </div>
         {hasMore && (
-          <div className="text-center mt-8">
+          <div className="text-center mt-6">
             <button
               onClick={() => handleLoadMore(type)}
-              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-full hover:from-blue-600 hover:to-indigo-700 transition-all disabled:opacity-50 flex items-center justify-center mx-auto"
+              className="px-4 py-2 bg-transparent text-neon-cyan border border-neon-cyan rounded-full hover:bg-neon-cyan/20 hover:text-white transition-all duration-300 disabled:opacity-50 flex items-center justify-center mx-auto text-sm"
               disabled={loading}
             >
               {loading ? (
                 <>
                   <svg
-                    className="animate-spin h-5 w-5 mr-2 text-white"
+                    className="animate-spin h-4 w-4 mr-2 text-neon-cyan"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -211,13 +203,6 @@ export default function MediaResults({ activeTab, imageResults, audioResults, vi
         )}
       </>
     );
-  };
-
-  const formatSize = (bytes?: number): string => {
-    if (!bytes) return 'Unknown';
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
   return (

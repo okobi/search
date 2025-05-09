@@ -17,17 +17,17 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col">
+    <div className="min-h-screen bg-black flex flex-col items-center py-8 px-4" style={{ fontFamily: "'Inter', sans-serif" }}>
       {/* Header */}
-      <header className="w-full p-4 bg-white shadow-md flex items-center justify-between">
+      <header className="w-full p-4 bg-gray-900/50 backdrop-blur-md rounded-lg border border-neon-purple/30 flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <h1 className="text-2xl font-semibold text-gray-800">
+          <h1 className="text-2xl font-semibold text-gray-200">
             {status === 'loading' ? 'Loading...' : `Welcome, ${session?.user?.name || 'User'}`}
           </h1>
         </div>
         <button
           onClick={() => signOut()}
-          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all"
+          className="px-4 py-2 bg-gray-800 text-gray-200 rounded-lg hover:bg-gray-700 transition-all"
         >
           Logout
         </button>
@@ -35,7 +35,7 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center p-6">
-        <h2 className="text-4xl font-bold text-gray-800 mb-4">Open Media Search</h2>
+        <h2 className="text-4xl font-bold text-gray-200 mb-4">Opensearch App</h2>
         <form onSubmit={handleSearch} className="w-full max-w-2xl flex flex-col items-center space-y-3">
           <div className="relative w-full">
             <input
@@ -43,10 +43,10 @@ export default function Home() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search for images, audio, or videos..."
-              className="w-full p-2 pl-10 rounded-full border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 placeholder-gray-400"
+              className="w-full p-2 pl-10 rounded-full border border-neon-purple/20 bg-gray-900/50 text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-neon-purple/50 transition-all"
             />
             <svg
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500"
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-neon-cyan"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -62,7 +62,7 @@ export default function Home() {
           </div>
           <button
             type="submit"
-            className="px-6 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-all"
+            className="px-6 py-2 bg-gray-800 text-gray-200 rounded-full hover:bg-gray-700 transition-all"
           >
             Search
           </button>
